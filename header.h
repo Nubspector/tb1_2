@@ -74,7 +74,8 @@ typedef struct {
 } ListMinuman;
 
 //layout
-
+void gotoxy(int x, int y);
+int validateDate(char *date);
 
 //Multilist Utama
 void createList(Multilist *L);

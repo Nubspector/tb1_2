@@ -74,14 +74,14 @@ int main() {
     int idTemp[] = {1, 2, 3};
     char *tanggal[] = {"2024-12-01", "2024-12-02 hahadsvfdfgdfgzdfgsdfg huhu", "2024-12-03"};
     int noMeja[] = {5, 7, 3};
-    
+    string temp;
     int i; 
     // header table
     char *columns[] = {"ID Nota", "Tanggal", "No Meja", "Time Stamp" };
     int columnCount = sizeof(columns) / sizeof(columns[0]);
     
     while (1) {
-    	
+    	menuUtama:
         clearScreen();
 		//system("cls");  // Hapus layar
         displayMenu(selected);
@@ -90,7 +90,7 @@ int main() {
         key = getch();
 
         // Debug: Tampilkan kode ASCII tombol yang ditekan
-        printf("ASCII: %d\n", key);
+//        printf("ASCII: %d\n", key);
 
         if (key == 'w' || key == 'W') { // Tombol atas
             selected = (selected - 1 + 13) % 13; // Navigasi ke atas
@@ -102,19 +102,63 @@ int main() {
 
             switch ((selected + 1)) {
                 case 1:
-                	clearScreen();    
-					gotoxy(0, 0);                
+            		gotoxy(0,0);
+                  	drawBoxWithText("Inputkan Tanggal",50);
+					gotoxy(0, 3);               
 					printf("\n----- Insert Nota -----\n");
                     printf("ID Nota : %d", N.idNota);
-                    printf("\nMasukkan tanggal : "); fflush(stdin); gets(N.tanggal);
-                    printf("Masukkan no meja : "); scanf("%d", &N.noMeja);
-                    insertParent(&L, N);
+                    while(1) {
+                    	gotoxy(0,5);printf("                                                                                                         ");
+                    	gotoxy(0,5);printf("\nMasukkan tanggal : "); fflush(stdin); gets(N.tanggal);
+                    	if(strcmpi(N.tanggal,"")==0){
+                    		gotoxy(0,0);
+                    		drawBoxWithText("Inputan Tidak Boleh Kosong",50);
+                    		Sleep(500);
+                    		gotoxy(0,0);
+                    		drawBoxWithText("Inputan Tanggal",50);
+                    		gotoxy(0, 5);     
+						} else if(!validateDate(N.tanggal)){
+							gotoxy(0,0);
+                    		drawBoxWithText("Inputan Formatnya Harus dd-mm-yyyy",50);
+                    		Sleep(500);
+                    		gotoxy(0,0);
+                    		drawBoxWithText("Inputan Tanggal",50);
+                    		gotoxy(0, 5);
+						} else {
+							break;
+						}
+					}
+                         // Input No Meja
+			        while (1) {
+			            gotoxy(0, 7);
+			            printf("                                                                                                         "); // Clear line
+			            gotoxy(0, 7);
+			            printf("Masukkan no meja: ");
+			            fflush(stdin);
+			            if (scanf("%d", &N.noMeja) != 1 || N.noMeja <= 0) {
+			                gotoxy(0, 0);
+			                drawBoxWithText("No Meja Tidak Boleh Kosong atau Invalid", 50);
+			                Sleep(500);
+			                gotoxy(0, 0);
+			                drawBoxWithText("Inputkan Tanggal", 50);
+			                gotoxy(0, 7);
+			                fflush(stdin); // Bersihkan input jika gagal membaca integer
+			            } else {
+			                break;
+			            }
+			        }
                     N.idNota++;
+                    gotoxy(0, 9);
+			        Sleep(500);
+	                gotoxy(0, 0);
+	                drawBoxWithText("Berhasil Input Nota", 50);
+			      	Sleep(600);
+			      	goto menuUtama;
                 break;
 
                 case 2:
-                	clearScreen();    
-					gotoxy(0, 0); 
+               
+					gotoxy(0, 2);
                     printf("\n----- Insert Pesanan -----\n");
                     printf("Masukkan ID Nota : "); scanf("%d", &idNota);
                     P = findParent(L, idNota);
@@ -160,10 +204,12 @@ int main() {
                 break;
 
                 case 3:
+                	gotoxy(0,2);
                     viewList(L, false);
                 break;
 
                 case 4:
+                	gotoxy(0, 2);
                     printf("\n----- Pisahkan Nota -----\n");
                     printf("Masukkan ID Nota yang akan dipisahkan : "); scanf("%d", &idNota);
                     P = findParent(L, idNota);
@@ -196,6 +242,7 @@ int main() {
                 break;
 
                 case 5:
+                	gotoxy(0, 2);
                     printf("\n----- Gabungkan Nota -----\n");
                     printf("Masukkan ID Nota pertama : "); scanf("%d", &idNota);
                     P = findParent(L, idNota);
@@ -225,6 +272,7 @@ int main() {
                 break;
 
                 case 6:
+                	gotoxy(0, 2);
                     printf("\n----- Pembayaran -----\n");
                     printf("Masukkan ID Nota : "); scanf("%d", &idNota);
                     P = findParent(L, idNota);
@@ -261,39 +309,42 @@ int main() {
                 break;
 
                 case 7:
+                	gotoxy(0, 2);
+                	
                     printf("Masukkan nama makanan : "); fflush(stdin); gets(namaMakanan);
                     printf("Masukkan harga makanan : "); scanf("%f", &hargaMakanan);
                     insertLastMakanan(&LM, namaMakanan, hargaMakanan, idMakanan++);
                 break;
 
                 case 8:
+                	gotoxy(0, 2);
                     printf("Masukkan nama minuman : "); fflush(stdin); gets(namaMinuman);
                     printf("Masukkan harga minuman : "); scanf("%f", &hargaMinuman);
                     insertLastMinuman(&LN, namaMinuman, hargaMinuman, idMinuman++);
                 break;
 
                 case 9:
+                	gotoxy(0, 0);
                     viewListMakanan(LM);
                 break;
 
                 case 10:
+                	gotoxy(0, 0);
                     viewListMinuman(LN);
                 break;
 
                 case 11:
+                	gotoxy(0, 1);
+                	sprintf(temp, "Laporan Pendapatan : Rp.%.2f", pendapatan);
+                	drawBoxWithText(temp,104);
+                	gotoxy(0, 5);
                     viewList(L, true);
                 break;
 
                 case 12:
-                    printf("Pendapatan : %.2f\n", pendapatan);
-                break;
-
-                case 13:
                     return;
                 break;
             }
-
-            printf("\nTekan tombol apapun untuk kembali ke menu...");
             getch(); // Tunggu input sebelum kembali ke menu
         }
     }

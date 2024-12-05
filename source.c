@@ -1,9 +1,6 @@
 #include "header.h"
 
-// Fungsi untuk membuat garis horizontal
-
-// Fungsi untuk menampilkan data parent dalam kotak
-void showParentBox(parentAddress parent, int tableWidth) {
+void showParentBox(parentAddress parent, int tableWidth){
     int contentWidth = tableWidth - 2;  // Lebar konten di dalam kotak
 	int i;
     printf("%c", 201);
@@ -50,9 +47,45 @@ void showTableHeader(char *columns[], int columnCount, int columnWidth) {
     printf("%c\n", 185);
 }
 
+void showTableHeaderV2(char *columns[], int columnCount, int columnWidth) {
+    int i, j;
+
+    // Garis atas tabel
+    printf("%c", 201);
+    for (i = 0; i < columnCount; i++) {
+        for (j = 0; j < columnWidth; j++) {
+            printf("%c", 205);
+        }
+        if (i < columnCount - 1) {
+            printf("%c", 203);
+        }
+    }
+    printf("%c\n", 187);
+
+    // Header tabel
+    printf("%c", 186);
+    for (i = 0; i < columnCount; i++) {
+        printf(" %-*s %c", columnWidth - 2, columns[i], 186);
+    }
+    printf("\n");
+
+    // Garis pemisah header dan data
+    printf("%c", 204);
+    for (i = 0; i < columnCount; i++) {
+        for (j = 0; j < columnWidth; j++) {
+            printf("%c", 205);
+        }
+        if (i < columnCount - 1) {
+            printf("%c", 206);
+        }
+    }
+    printf("%c\n", 185);
+}
+
+
 // Fungsi untuk menampilkan baris data child
 void showTableRow(int idPesanan, const char *namaPesanan, int jumlahItem, float harga, int columnWidth) {
-    printf("%c %-*d %c %-*s %c %-*d %c %-*.2f %c %-*.2f %c\n",
+    printf("%c %-*d %c %-*s %c %-*d %c %-*.2f %c\n",
            186,
            columnWidth - 2, idPesanan,
            186,
@@ -61,8 +94,20 @@ void showTableRow(int idPesanan, const char *namaPesanan, int jumlahItem, float 
            columnWidth - 2, jumlahItem,
            186,
            columnWidth - 2, harga,
+           186
+           );
+}
+
+void showTableRowMakanan(int idPesanan,string namaMakanan, float harga,int penjualan, int columnWidth) {
+    printf("%c %-*d %c %-*s %c %-*.2f %c %-*d %c \n",
+           186,
+           columnWidth - 2, idPesanan,
+           186,
+           columnWidth - 2, namaMakanan,
            186,
            columnWidth - 2, harga,
+           186,
+           columnWidth - 2, penjualan,
            186
            );
 }
@@ -87,11 +132,11 @@ void showSingle(parentAddress parent) {
 	
     // Lebar total tabel
     int columnWidth = 20;
-    int columnCount = 5;
+    int columnCount = 4;
     int tableWidth = columnWidth * columnCount + (columnCount + 1);
 
     // Header tabel
-    char *columns[] = {"Id Pesanan", "Nama Pemesan", "Jumlah", "Harga", "Alamat"};
+    char *columns[] = {"Id Pesanan", "Nama Pemesan", "Jumlah", "Harga"};
 
     // Tampilkan data parent
     showParentBox(parent, tableWidth);
@@ -107,7 +152,6 @@ void showSingle(parentAddress parent) {
             tempChild->data.namaPesanan,
             tempChild->data.jumlahItem,
             tempChild->data.harga,
-         
             columnWidth
         );
         tempChild = tempChild->next;
@@ -120,8 +164,6 @@ void showSingle(parentAddress parent) {
 
 
 void viewList(Multilist L, bool stat) {
-
-	gotoxy(0, 0);
     parentAddress temp = L.first;
        
     if (temp == NULL) {
@@ -136,7 +178,51 @@ void viewList(Multilist L, bool stat) {
     }
 }
 
+void viewListMakanan(ListMakanan L) {
 
+    // Lebar total tabel
+    int columnWidth = 20;
+    int columnCount = 4;
+    int tableWidth = columnWidth * columnCount + (columnCount + 1);
+
+    // Header tabel
+    char *columns[] = {"Id Makanan", "Nama", "harga", "Penjualan"};
+    addressMakanan temp = L.first;
+    if (temp == NULL) {
+        printf("List Makanan Kosong\n");
+    } else {
+    
+    	showTableHeaderV2(columns,columnCount,columnWidth);
+        while (temp != NULL) {
+        	showTableRowMakanan(temp->idMakanan, temp->namaMakanan, temp->hargaMakanan, temp->penjualan,columnWidth);
+            temp = temp->next;
+        }
+        showTableFooter(columnCount,columnWidth);
+    }
+}
+
+void viewListMinuman(ListMinuman L) {
+    addressMinuman temp = L.first;
+   
+    // Lebar total tabel
+    int columnWidth = 20;
+    int columnCount = 4;
+    int tableWidth = columnWidth * columnCount + (columnCount + 1);
+
+    // Header tabel
+    char *columns[] = {"Id Minuman", "Nama", "harga", "Penjualan"};
+    
+    if (temp == NULL) {
+        printf("List Minuman Kosong\n");
+    } else {
+       showTableHeaderV2(columns,columnCount,columnWidth);
+        while (temp != NULL) {
+        	showTableRowMakanan(temp->idMinuman, temp->namaMinuman, temp->hargaMinuman, temp->penjualan,columnWidth);
+            temp = temp->next;
+        }
+        showTableFooter(columnCount,columnWidth);
+    }
+}
 
 
 
@@ -293,18 +379,6 @@ void insertLastMakanan(ListMakanan *L, string namaMakanan, float hargaMakanan, i
     }
 }
 
-void viewListMakanan(ListMakanan L) {
-    addressMakanan temp = L.first;
-    if (temp == NULL) {
-        printf("List Makanan Kosong\n");
-    } else {
-        printf("ID\tNama Makanan\tHarga\tPenjualan\n");
-        while (temp != NULL) {
-            printf("%d\t%s\t%.2f\t%d\n", temp->idMakanan, temp->namaMakanan, temp->hargaMakanan, temp->penjualan);
-            temp = temp->next;
-        }
-    }
-}
 
 addressMakanan searchMakanan(ListMakanan L, int idMakanan) {
     addressMakanan temp = L.first;
@@ -378,18 +452,7 @@ void insertLastMinuman(ListMinuman *L, string namaMinuman, float hargaMinuman, i
     }
 }
 
-void viewListMinuman(ListMinuman L) {
-    addressMinuman temp = L.first;
-    if (temp == NULL) {
-        printf("List Minuman Kosong\n");
-    } else {
-        printf("ID\tNama Minuman\tHarga\tPenjualan\n");
-        while (temp != NULL) {
-            printf("%d\t%s\t%.2f\t%d\n", temp->idMinuman, temp->namaMinuman, temp->hargaMinuman, temp->penjualan);
-            temp = temp->next;
-        }
-    }
-}
+
 
 addressMinuman searchMinuman(ListMinuman L, int idMinuman) {
     addressMinuman temp = L.first;
@@ -428,8 +491,7 @@ void displayMenu(int selected) {
         "[*] Tambah Minuman					",
         "[*] View Makanan					",
         "[*] View Minuman					",
-        "[*] Riwayat					",
-        "[*] Laporan Pendapatan					",
+        "[*] Riwayat & Pendapatan				",
         "[*] Exit					"
     };
 
