@@ -147,6 +147,7 @@ int main() {
 			                break;
 			            }
 			        }
+			        insertParent(&L,N);
                     N.idNota++;
                     gotoxy(0, 9);
 			        Sleep(500);
@@ -156,52 +157,128 @@ int main() {
 			      	goto menuUtama;
                 break;
 
-                case 2:
-               
-					gotoxy(0, 2);
-                    printf("\n----- Insert Pesanan -----\n");
-                    printf("Masukkan ID Nota : "); scanf("%d", &idNota);
-                    P = findParent(L, idNota);
-                    if (P != NULL) {
-                        printf("\nID Pesanan : %d", data.idPesanan);
-                        printf("\n\n[1] Makanan");
-                        printf("\n[2] Minuman");
-                        printf("\n>>> "); scanf("%d", &menu2);
-                        switch(menu2) {
-                            case 1:
-                                viewListMakanan(LM);
-                                printf("\nMasukkan ID Makanan : "); scanf("%d", &idM);
-                                tempM = searchMakanan(LM, idM);
-                                if(tempM != NULL) {
-                                    printf("\nMasukkan jumlah item : "); scanf("%d", &data.jumlahItem);
-                                    data.harga = tempM->hargaMakanan * data.jumlahItem;
-                                    strcpy(data.namaPesanan, tempM->namaMakanan);
-                                } else {
-                                    printf("\n\t[!] Makanan tidak ditemukan\n");
-                                }
-                                insertChild(P, data);
-                                data.idPesanan++;
-                            break;
-
-                            case 2:
-                                viewListMinuman(LN);
-                                printf("\nMasukkan ID Minuman : "); scanf("%d", &idN);
-                                tempN = searchMinuman(LN, idN);
-                                if(tempN != NULL) {
-                                    printf("\nMasukkan jumlah item : "); scanf("%d", &data.jumlahItem);
-                                    data.harga = tempN->hargaMinuman * data.jumlahItem;
-                                    strcpy(data.namaPesanan, tempN->namaMinuman);
-                                } else {
-                                    printf("\n\t[!] Minuman tidak ditemukan\n");
-                                }
-                                insertChild(P, data);
-                                data.idPesanan++;
-                            break;
-                        }
-                    } else {
-                        printf("\n\t[!] Nota tidak ditemukan\n");
-                    }
-                break;
+               case 2:
+				    gotoxy(0, 2);
+				    printf("\n----- Insert Pesanan -----\n");
+				
+				    // Validasi ID Nota (tidak kosong)
+				    while (1) {
+				    	system("cls");
+				        printf("Masukkan ID Nota: ");
+				        if (scanf("%d", &idNota) != 1 || idNota <= 0) {
+				            gotoxy(0, 4);
+				            printf("\n\t[!] ID Nota tidak valid.\n");
+				            Sleep(500);
+				            gotoxy(0, 4);
+				            continue;
+				        }
+				        P = findParent(L, idNota);
+				        if (P == NULL) {
+				            gotoxy(0, 4);
+				            printf("\n\t[!] Nota dengan ID %d tidak ditemukan.\n", idNota);
+				            Sleep(500);
+				            gotoxy(0, 4);
+				        } else {
+				            break; // ID Nota ditemukan
+				        }
+				    }
+				
+				    printf("\nID Pesanan : %d", data.idPesanan);
+				    printf("\n\n[1] Makanan");
+				    printf("\n[2] Minuman");
+				    printf("\n>>> ");
+				    scanf("%d", &menu2);
+				
+				    switch(menu2) {
+				        case 1:
+				            // Validasi ID Makanan
+				            while (1) {
+				            	system("cls");
+				                viewListMakanan(LM);
+				                printf("\nMasukkan ID Makanan: ");
+				                if (scanf("%d", &idM) != 1 || idM <= 0) {
+				                    gotoxy(0, 16);
+				                    printf("\n\t[!] ID Makanan tidak valid.\n");
+				                    Sleep(500);
+				                    gotoxy(0, 16);
+				                    continue;
+				                }
+				                tempM = searchMakanan(LM, idM);
+				                if (tempM == NULL) {
+				                    gotoxy(0, 16);
+				                    printf("\n\t[!] Makanan dengan ID %d tidak ditemukan.\n", idM);
+				                    Sleep(500);
+				                    gotoxy(0, 16);
+				                } else {
+				                    break; // ID Makanan ditemukan
+				                }
+				            }
+				
+				            printf("\nMasukkan jumlah item: ");
+				            scanf("%d", &data.jumlahItem);
+				
+				            // Validasi jumlah item
+				            if (data.jumlahItem <= 0) {
+				                gotoxy(0, 16);
+				                printf("\n\t[!] Jumlah item tidak valid.\n");
+				                Sleep(500);
+				                gotoxy(0, 16);
+				            } else {
+				                data.harga = tempM->hargaMakanan * data.jumlahItem;
+				                strcpy(data.namaPesanan, tempM->namaMakanan);
+				                insertChild(P, data);
+				                data.idPesanan++;
+				            }
+				            break;
+				
+				        case 2:
+				            // Validasi ID Minuman
+				            while (1) {
+				                viewListMinuman(LN);
+				                printf("\nMasukkan ID Minuman: ");
+				                if (scanf("%d", &idN) != 1 || idN <= 0) {
+				                    gotoxy(0, 16);
+				                    printf("\n\t[!] ID Minuman tidak valid.\n");
+				                    Sleep(500);
+				                    gotoxy(0, 16);
+				                    continue;
+				                }
+				                tempN = searchMinuman(LN, idN);
+				                if (tempN == NULL) {
+				                    gotoxy(0, 16);
+				                    printf("\n\t[!] Minuman dengan ID %d tidak ditemukan.\n", idN);
+				                    Sleep(500);
+				                    gotoxy(0, 16);
+				                } else {
+				                    break; // ID Minuman ditemukan
+				                }
+				            }
+				
+				            printf("\nMasukkan jumlah item: ");
+				            scanf("%d", &data.jumlahItem);
+				
+				            // Validasi jumlah item
+				            if (data.jumlahItem <= 0) {
+				                gotoxy(0, 16);
+				                printf("\n\t[!] Jumlah item tidak valid.\n");
+				                Sleep(500);
+				                gotoxy(0, 16);
+				            } else {
+				                data.harga = tempN->hargaMinuman * data.jumlahItem;
+				                strcpy(data.namaPesanan, tempN->namaMinuman);
+				                insertChild(P, data);
+				                data.idPesanan++;
+				            }
+				            break;
+				
+				        default:
+				            gotoxy(0, 5);
+				            printf("\n\t[!] Pilihan menu tidak valid.\n");
+				            Sleep(500);
+				            gotoxy(0, 5);
+				            break;
+				    }
+				    break;
 
                 case 3:
                 	gotoxy(0,2);
@@ -271,57 +348,136 @@ int main() {
                     }
                 break;
 
-                case 6:
-                	gotoxy(0, 2);
-                    printf("\n----- Pembayaran -----\n");
-                    printf("Masukkan ID Nota : "); scanf("%d", &idNota);
-                    P = findParent(L, idNota);
-                    if (P != NULL) {
-                        showSingle(P);
-                        printf("\nTotal Harga : %.2f", P->data.totalHarga);
-                        printf("\nMasukkan Total Pembayaran : "); scanf("%f", &bayar);
-                        if(bayar >= P->data.totalHarga) {
-                            C = P->child;
-                            P->data.status = true;
-                            pendapatan += P->data.totalHarga;
-                            
-                            while(C != NULL) {
-                                tempM = searchMakanan2(LM, C->data.namaPesanan);
-                                tempN = searchMinuman2(LN, C->data.namaPesanan);
-                                if (tempM != NULL) {
-                                    tempM->penjualan += C->data.jumlahItem;
-                                }
-                                if(tempN != NULL) {
-                                    tempN->penjualan += C->data.jumlahItem;
-                                }
+case 6:
+    printf("\n----- Pembayaran -----\n");
 
-                                C = C->next;
-                            }
+    // Validasi ID Nota (tidak kosong)
+    while (1) {
+        printf("Masukkan ID Nota: ");
+        if (scanf("%d", &idNota) != 1 || idNota <= 0) {
+            system("cls"); // Membersihkan layar
+            printf("\n\t[!] ID Nota tidak valid.\n");
+            Sleep(500);
+            continue;
+        }
 
-                            printf("\n\t[!] Pembayaran Berhasil\n");
-                            printf("\n\t[*] Kembalian : %.2f\n", bayar - P->data.totalHarga);
-                        } else {
-                            printf("\n\t[!] Pembayaran Kurang\n");
-                        }
-                    } else {
-                        printf("\n\t[!] Nota tidak ditemukan\n");
-                    }
-                break;
+        P = findParent(L, idNota);
+        if (P != NULL) {
+            showSingle(P);
+            printf("\nTotal Harga : %.2f", P->data.totalHarga);
+            break;
+        } else {
+            system("cls"); // Membersihkan layar
+            printf("\n\t[!] Nota dengan ID %d tidak ditemukan.\n", idNota);
+            Sleep(500);
+        }
+    }
 
-                case 7:
-                	gotoxy(0, 2);
-                	
-                    printf("Masukkan nama makanan : "); fflush(stdin); gets(namaMakanan);
-                    printf("Masukkan harga makanan : "); scanf("%f", &hargaMakanan);
-                    insertLastMakanan(&LM, namaMakanan, hargaMakanan, idMakanan++);
-                break;
+    // Validasi pembayaran
+    while (1) {
+        printf("\nMasukkan Total Pembayaran : ");
+        if (scanf("%f", &bayar) != 1 || bayar <= 0) {
+            system("cls"); // Membersihkan layar
+            printf("\n\t[!] Pembayaran tidak valid.\n");
+            Sleep(500);
+            continue;
+        }
 
-                case 8:
-                	gotoxy(0, 2);
-                    printf("Masukkan nama minuman : "); fflush(stdin); gets(namaMinuman);
-                    printf("Masukkan harga minuman : "); scanf("%f", &hargaMinuman);
-                    insertLastMinuman(&LN, namaMinuman, hargaMinuman, idMinuman++);
-                break;
+        if (bayar >= P->data.totalHarga) {
+            // Pembayaran berhasil
+            C = P->child;
+            P->data.status = true;
+            pendapatan += P->data.totalHarga;
+
+            while (C != NULL) {
+                tempM = searchMakanan2(LM, C->data.namaPesanan);
+                tempN = searchMinuman2(LN, C->data.namaPesanan);
+                if (tempM != NULL) {
+                    tempM->penjualan += C->data.jumlahItem;
+                }
+                if (tempN != NULL) {
+                    tempN->penjualan += C->data.jumlahItem;
+                }
+
+                C = C->next;
+            }
+
+            system("cls"); // Membersihkan layar
+            printf("\n\t[!] Pembayaran Berhasil\n");
+            printf("\n\t[*] Kembalian : %.2f\n", bayar - P->data.totalHarga);
+            break;
+        } else {
+            system("cls"); // Membersihkan layar
+            printf("\n\t[!] Pembayaran Kurang\n");
+            Sleep(500);
+        }
+    }
+    break;
+
+case 7:
+    printf("\n----- Input Makanan -----\n");
+
+    // Validasi nama makanan tidak kosong
+    while (1) {
+        printf("Masukkan nama makanan : ");
+        fflush(stdin);
+        gets(namaMakanan);
+        if (strlen(namaMakanan) == 0) {
+            system("cls"); // Membersihkan layar
+            printf("\n\t[!] Nama makanan tidak boleh kosong.\n");
+            Sleep(500);
+            continue;
+        }
+        break;
+    }
+
+    // Validasi harga makanan lebih besar dari 0
+    while (1) {
+        printf("Masukkan harga makanan : ");
+        if (scanf("%f", &hargaMakanan) != 1 || hargaMakanan <= 0) {
+            system("cls"); // Membersihkan layar
+            printf("\n\t[!] Harga makanan tidak valid.\n");
+            Sleep(500);
+            continue;
+        }
+        break;
+    }
+
+    insertLastMakanan(&LM, namaMakanan, hargaMakanan, idMakanan++);
+    break;
+
+case 8:
+    printf("\n----- Input Minuman -----\n");
+
+    // Validasi nama minuman tidak kosong
+    while (1) {
+        printf("Masukkan nama minuman : ");
+        fflush(stdin);
+        gets(namaMinuman);
+        if (strlen(namaMinuman) == 0) {
+            system("cls"); // Membersihkan layar
+            printf("\n\t[!] Nama minuman tidak boleh kosong.\n");
+            Sleep(500);
+            continue;
+        }
+        break;
+    }
+
+    // Validasi harga minuman lebih besar dari 0
+    while (1) {
+        printf("Masukkan harga minuman : ");
+        if (scanf("%f", &hargaMinuman) != 1 || hargaMinuman <= 0) {
+            system("cls"); // Membersihkan layar
+            printf("\n\t[!] Harga minuman tidak valid.\n");
+            Sleep(500);
+            continue;
+        }
+        break;
+    }
+
+    insertLastMinuman(&LN, namaMinuman, hargaMinuman, idMinuman++);
+    break;
+
 
                 case 9:
                 	gotoxy(0, 0);
