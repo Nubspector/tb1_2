@@ -1,0 +1,41 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Multi-File C",
+      "type": "shell",
+      "command": "gcc",
+      "args": [
+        "-Wall",
+        "-Wextra",
+        "-g3",
+        "main.c",
+        "source.c",
+        "layout_source.c",
+        "-o",
+        "program",
+        "helper_source.c"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"],
+      "detail": "Kompilasi multi-file proyek C"
+    },
+    {
+      "label": "Run Program",
+      "type": "shell",
+      "command": "./program",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "dependsOn": "Build Multi-File C"
+    }
+  ]
+}

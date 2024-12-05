@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "*.embeddedhtml": "html",
+    "header.h": "c",
+    "string.h": "c",
+    "initializer_list": "c"
+  }
+}
